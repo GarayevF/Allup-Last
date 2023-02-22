@@ -1,5 +1,19 @@
 ﻿$(document).ready(function () {
 
+    $('.product-close').on('click', function (e) {
+        e.preventDefault();
+
+        let url = $(this).attr('href');
+        console.log(url)
+        fetch(url)
+            .then(res => {
+                return res.text()
+            })
+            .then(data => {
+                $('.header-cart').html(data)
+
+            })
+    })
 
     $('.addbasket').click(function (e) {
         e.preventDefault();
@@ -9,7 +23,7 @@
         fetch(url)
             .then(res => {
                 
-                return res.json()
+                return res.text()
             })
             .then(data => {
                 $('.header-cart').html(data)

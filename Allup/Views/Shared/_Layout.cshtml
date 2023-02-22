@@ -3,6 +3,7 @@
 @{
     IDictionary<string, string> settings = await layoutService.GetSettings();
     IEnumerable<Category> categories = await layoutService.GetCategories();
+    List<BasketVM> basketVMs = await layoutService.GetBaskets();
 }
 
 <!doctype html>
@@ -165,14 +166,7 @@
                                 </div>
                                 
                                 <div class="header-cart">
-                                    <div class="cart-btn">
-                                        <a href="#">
-                                            <i class="icon ion-bag"></i>
-                                            <span class="text">Cart :</span>
-                                            <span class="total">$0</span>
-                                            <span class="count">0</span>
-                                        </a>
-                                    </div>
+                                    @await Html.PartialAsync("_BasketCartPartial", basketVMs)
                                 </div>
                             </div> <!-- header search cart -->
                         </div>

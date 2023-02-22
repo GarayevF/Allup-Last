@@ -1,0 +1,11 @@
+﻿@model IEnumerable<BasketVM>
+
+<section class="cart-page pt-10">
+    <div class="container-fluid custom-container">
+        <div class="row cart-main-checkoutpage">
+            @await Html.PartialAsync("_BasketMainPartial", Model)
+        </div>
+    </div>
+</section>
+
+<!--====== Cart Part Ends ======-->
