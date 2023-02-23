@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
 
-    $('.product-close').on('click', function (e) {
+    $(document).on('click', '.product-close', function (e) {
         e.preventDefault();
 
         let url = $(this).attr('href');
@@ -11,7 +11,14 @@
             })
             .then(data => {
                 $('.header-cart').html(data)
-
+                fetch(url.replace("removebasket/" + url.split('/')[url.split('/').length - 1], 'mainbasket'))
+                
+                    .then(res2 => {
+                        return res2.text()
+                    })
+                    .then(data2 => {
+                        $('.cart-main-checkoutpage').html(data2)
+                    })
             })
     })
 

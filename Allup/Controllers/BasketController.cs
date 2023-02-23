@@ -101,7 +101,27 @@ namespace Allup.Controllers
 
 
 
+        public async Task<IActionResult> MainBasket()
+        {
+            string basket = HttpContext.Request.Cookies["basket"];
 
+            List<BasketVM> basketVMs = JsonConvert.DeserializeObject<List<BasketVM>>(basket);
+
+            foreach (BasketVM basketVM in basketVMs)
+            {
+                Product product = await _context.Products.FirstOrDefaultAsync(p => p.IsDeleted == false && p.Id == basketVM.Id);
+
+                if (product != null)
+                {
+                    basketVM.Title = product.Title;
+                    basketVM.Price = product.DiscountedPrice > 0 ? product.DiscountedPrice : product.Price;
+                    basketVM.Image = product.MainImage;
+                    basketVM.ExTax = product.ExTax;
+                }
+            }
+
+            return PartialView("_BasketMainPartial", basketVMs);
+        }
 
 
         public async Task<IActionResult> RemoveBasket(int? id)
