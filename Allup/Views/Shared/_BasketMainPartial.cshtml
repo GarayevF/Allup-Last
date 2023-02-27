@@ -38,9 +38,9 @@
                             <td>
                                 <div class="product-quantity">
                                     <div class="quantity mt-15 d-flex">
-                                        <button type="button" class="sub"><i class="fal fa-minus"></i></button>
+                                        <a asp-controller="basket" asp-action="removebasket" asp-route-id="@basketVM.Id" class="sub"><i class="fal fa-minus"></i></a>
                                         <input type="text" value="@basketVM.Count" />
-                                        <button type="button" class="add"><i class="fal fa-plus"></i></button>
+                                        <a asp-controller="basket" asp-action="increasecount" asp-route-id="@basketVM.Id" class="add"><i class="fal fa-plus"></i></a>
                                     </div>
                                 </div>
                             </td>
@@ -51,7 +51,7 @@
                             </td>
                             <td>
                                 <div class="product-delete">
-                                    <a href="#"><i class="fal fa-trash-alt"></i></a>
+                                    <a asp-action="removebasket" asp-controller="basket" asp-route-id="@basketVM.Id" class="basketdelete"><i class="fal fa-trash-alt"></i></a>
                                 </div>
                             </td>
                         </tr>

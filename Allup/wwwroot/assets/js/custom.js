@@ -1,6 +1,7 @@
 ﻿$(document).ready(function () {
 
-    $(document).on('click', '.product-close', function (e) {
+    $(document).on('click', '.product-close', '.basketdelete', '.sub', function (e)
+    {
         e.preventDefault();
 
         let url = $(this).attr('href');
@@ -11,14 +12,26 @@
             })
             .then(data => {
                 $('.header-cart').html(data)
+                console.log(url.replace("removebasket/" + url.split('/')[url.split('/').length - 1], 'mainbasket'))
                 fetch(url.replace("removebasket/" + url.split('/')[url.split('/').length - 1], 'mainbasket'))
-                
                     .then(res2 => {
                         return res2.text()
                     })
                     .then(data2 => {
                         $('.cart-main-checkoutpage').html(data2)
                     })
+            })
+    }).on('click', '.add', function (e) {
+        e.preventDefault();
+
+        let url = $(this).attr('href');
+        console.log(url)
+        fetch(url)
+            .then(res => {
+                return res.text()
+            })
+            .then(data => {
+                $('.cart-main-checkoutpage').html(data)
             })
     })
 
