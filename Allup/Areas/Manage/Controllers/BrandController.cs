@@ -22,6 +22,18 @@ namespace Allup.Areas.Manage.Controllers
             return View(brands);
         }
 
+        public async Task<IActionResult> Detail(int? id)
+        {
+            if(id == null) return BadRequest();
+
+            Brand brand = await _context.Brands.Include(b=>b.Products.Where(p=>p.IsDeleted == false))
+                .FirstOrDefaultAsync(b=>b.Id == id && b.IsDeleted == false);
+
+            if (brand == null) return NotFound();
+
+            return View(brand);
+        }
+
         [HttpGet]
         public IActionResult Create() 
         { 
@@ -52,9 +64,16 @@ namespace Allup.Areas.Manage.Controllers
         }
 
         [HttpGet]
-        public IActionResult Update()
+        public async Task<IActionResult> Update(int? id)
         {
-            return View();
+            if (id == null) return BadRequest();
+
+            Brand brand = await _context.Brands.FirstOrDefaultAsync(b => b.Id == id && b.IsDeleted == false);
+
+            if (brand == null) return NotFound();
+
+            return View(brand);
+
         }
 
         [HttpPost]
@@ -81,23 +100,24 @@ namespace Allup.Areas.Manage.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> Delete(Brand brand)
+        public async Task<IActionResult> Delete(int? id)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(brand);
-            }
-            if (!await _context.Brands.AnyAsync(b => b.IsDeleted == false))
-            {
-                return BadRequest();
-            }
+            if(id == null) return BadRequest();
+
+            Brand brand = await _context.Brands.Include(b => b.Products.Where(p => p.IsDeleted == false))
+                .FirstOrDefaultAsync(b => b.Id == id && b.IsDeleted == false);
+
+            if (brand == null) return NotFound();
 
             brand.IsDeleted = true;
+            brand.DeletedBy = "system";
+            brand.DeletedAt = DateTime.UtcNow.AddHours(4);
 
-            await _context.Brands.AddAsync(brand);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            IEnumerable<Brand> brands = await _context.Brands.Include(b=>b.Products).Where(b=>b.IsDeleted == false).ToListAsync();
+
+            return PartialView("_BrandIndexPartial", brands);
 
         }
     }

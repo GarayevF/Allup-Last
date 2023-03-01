@@ -41,12 +41,6 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
-                <a class="nav-link" href="index.html">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider">
@@ -61,7 +55,12 @@
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            
+            <li class="nav-item active">
+                <a class="nav-link" asp-area="manage" asp-controller="Category" asp-action="index">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Category</span>
+                </a>
+            </li>
 
         </ul>
         <!-- End of Sidebar -->
@@ -332,6 +331,10 @@
         </div>
     </div>
 
+
+
+
+    
     <!-- Bootstrap core JavaScript-->
     <script src="~/manage/vendor/jquery/jquery.min.js"></script>
     <script src="~/manage/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -344,10 +347,12 @@
 
     <!-- Page level plugins -->
     <script src="~/manage/vendor/chart.js/Chart.min.js"></script>
-
+    
     <!-- Page level custom scripts -->
     <script src="~/manage/js/demo/chart-area-demo.js"></script>
     <script src="~/manage/js/demo/chart-pie-demo.js"></script>
+
+    <script src="~/manage/js/custom.js"></script>
 
 </body>
 
