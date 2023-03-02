@@ -30,8 +30,8 @@ namespace Allup.Models
         [Required]
         public string HoverImage { get; set; }
 
-        public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public int? CategoryId { get; set; }
+        public Category? Category { get; set; }
         public int BrandId { get; set; }
         public Brand Brand { get; set; }
         public IEnumerable<ProductImage> ProductImages { get; set; }

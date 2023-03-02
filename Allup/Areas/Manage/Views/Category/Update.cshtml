@@ -41,3 +41,16 @@
         <button type="button" class="btn btn-primary">Submit</button>
     </div>
 </div>
+
+<script>
+    let isMain = @Model.IsMain.ToString().ToLower();
+
+    if(IsMain){
+        document.querySelector('.fileInput').classList.remove('d-none');
+        document.querySelector('.parentInput').classList.add('d-none');
+    }else{
+        document.querySelector('.fileInput').classList.add('d-none');
+        document.querySelector('.parentInput').classList.remove('d-none');
+    }
+
+</script>

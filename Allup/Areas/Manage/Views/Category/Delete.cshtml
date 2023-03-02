@@ -1,0 +1,97 @@
+﻿@model Category
+@{
+    ViewData["Title"] = "Delete";
+    int count = 0;
+    int childCount = 0;
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="row justify-content-lg-between">
+            <div class="col-lg-3">
+                <h1 class="h3 mb-4 text-gray-800">Brand Page</h1>
+            </div>
+            <div class="col-lg-2" style="text-align: end">
+                <a asp-area="manage" asp-controller="category" asp-action="index" class="btn btn-primary">Go to home</a>
+            </div>
+
+            <div class="col-lg-2" style="text-align: end">
+                <a asp-area="manage" asp-controller="category" asp-action="deleteCategory" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="card" style="width: 18rem;">
+            @if (string.IsNullOrWhiteSpace(Model.Image))
+            {
+                <img style="card-img-top" src="~/assets/images/@Model.Image" />
+            }
+            <div class="card-body">
+                <h5 class="card-title">Brand Name: @Model.Name</h5>
+            </div>
+        </div>
+    </div>
+    @if (Model.Products != null && Model.Children.Count() > 0)
+    {
+        <div class="col-lg-12">
+            <h4>Children Categories</h4>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>%</th>
+                        <th>Name</th>
+                        <th>Created At</th>
+                        <th>Created By</th>
+                        <th>Product Count</th>
+                        <th>Settings</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Category category in Model.Children)
+                    {
+                        childCount++;
+                        <tr>
+                            <td>@childCount</td>
+                            <td>@category.Name</td>
+                            <td>@category.CreatedAt?.ToString("dd-MMM-yyyy")</td>
+                            <td>@category.CreatedBy</td>
+                            <td>@category.Products.Count()</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    @if (Model.Children != null && Model.Products.Count() > 0)
+    {
+        <div class="col-lg-12">
+            <h4>Products</h4>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>%</th>
+                        <th>Name</th>
+                        <th>Created At</th>
+                        <th>Created By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (Product product in Model.Products)
+                    {
+                        count++;
+                        <tr>
+                            <td>@count</td>
+                            <td>@product.Title</td>
+                            <td>@product.CreatedAt?.ToString("dd-MMM-yyyy")</td>
+                            <td>@product.CreatedBy</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+</div>
+
+
+

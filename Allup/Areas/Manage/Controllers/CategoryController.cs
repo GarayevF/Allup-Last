@@ -20,33 +20,49 @@ namespace Allup.Areas.Manage.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _context.Categories
-                .Include(c=>c.Products.Where(p=>p.IsDeleted == false))
-                .Where(p=>p.IsDeleted == false && p.IsMain)
+                .Include(c => c.Products.Where(p => p.IsDeleted == false))
+                .Where(p => p.IsDeleted == false && p.IsMain)
                 .ToListAsync());
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Detail(int? id)
+        {
+            if (id == null) return BadRequest();
+
+            Category category = await _context.Categories
+                .Include(c => c.Children.Where(ca => ca.IsDeleted == false)).ThenInclude(ch => ch.Products.Where(p => p.IsDeleted == false))
+                .Include(c => c.Products.Where(p => p.IsDeleted == false))
+                .FirstOrDefaultAsync(c => c.IsDeleted == false && c.Id == id);
+
+            if (category == null) return NotFound();
+
+            return View(category);
         }
 
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            ViewBag.MainCategories = await _context.Categories.Where(c=>c.IsDeleted == false && c.IsMain).ToListAsync();
+            ViewBag.MainCategories = await _context.Categories.Where(c => c.IsDeleted == false && c.IsMain).ToListAsync();
 
             return View();
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Category category)
         {
             ViewBag.MainCategories = await _context.Categories.Where(c => c.IsDeleted == false && c.IsMain).ToListAsync();
 
             if (!ModelState.IsValid) return View();
 
-            if(await _context.Categories.AnyAsync(c=>c.IsDeleted == false && c.Name.ToLower() == category.Name.Trim().ToLower()))
+            if (await _context.Categories.AnyAsync(c => c.IsDeleted == false && c.Name.ToLower() == category.Name.Trim().ToLower()))
             {
                 ModelState.AddModelError("Name", $"Bu adda {category.Name} category movcuddu");
                 return View(category);
             }
 
-            if(category.IsMain)
+            if (category.IsMain)
             {
                 if (category.File?.ContentType != "image/jpeg")
                 {
@@ -77,13 +93,13 @@ namespace Allup.Areas.Manage.Controllers
             }
             else
             {
-                if(category.ParentId == null)
+                if (category.ParentId == null)
                 {
                     ModelState.AddModelError("ParentId", "Parent mutleq secilmelidir");
                     return View(category);
                 }
 
-                if(!await _context.Categories.AnyAsync(c=>c.IsDeleted == false && c.Id == category.ParentId && c.IsMain))
+                if (!await _context.Categories.AnyAsync(c => c.IsDeleted == false && c.Id == category.ParentId && c.IsMain))
                 {
                     ModelState.AddModelError("ParentId", "Parent mutleq secilmelidir");
                     return View(category);
@@ -108,7 +124,7 @@ namespace Allup.Areas.Manage.Controllers
 
             if (id == null) return BadRequest();
 
-            Category category = await _context.Categories.FirstOrDefaultAsync(c=> c.Id == id && c.IsDeleted == false);
+            Category category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id && c.IsDeleted == false);
 
             if (category == null) return NotFound();
 
@@ -118,11 +134,12 @@ namespace Allup.Areas.Manage.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Update(int? id, Category category)
         {
-            if (!ModelState.IsValid) return View();
+            if (!ModelState.IsValid) return View(category);
 
-            if(id == null) return BadRequest();
+            if (id == null) return BadRequest();
 
             if (id != category.Id) return BadRequest();
 
@@ -130,16 +147,16 @@ namespace Allup.Areas.Manage.Controllers
 
             if (category == null) return NotFound();
 
-            if(await _context.Categories.AnyAsync(c => c.IsDeleted == false && c.Name.ToLower() == category.Name.Trim().ToLower() && c.Id != category.Id))
+            if (await _context.Categories.AnyAsync(c => c.IsDeleted == false && c.Name.ToLower() == category.Name.Trim().ToLower() && c.Id != category.Id))
             {
                 ModelState.AddModelError("Name", $"Bu adda {category.Name} category movcuddur");
                 return View(category);
             }
 
-            if(dbCategory.IsMain == category.IsMain)
+            if (dbCategory.IsMain == category.IsMain)
             {
                 ModelState.AddModelError("IsMain", "Categorynin veziyyeti deyisdirile bilmez");
-                return View(category);
+                return View(dbCategory);
             }
 
             if (dbCategory.IsMain && category.File != null)
@@ -172,10 +189,105 @@ namespace Allup.Areas.Manage.Controllers
                     await category.File.CopyToAsync(stream);
                 }
 
-                
+
 
                 dbCategory.Image = fileName;
             }
+            else
+            {
+                if (category.ParentId != dbCategory.ParentId)
+                {
+                    if (category.ParentId == null)
+                    {
+                        ModelState.AddModelError("ParentId", "Parent mutleq secilmelidir");
+                        return View(category);
+                    }
+
+                    if (!await _context.Categories.AnyAsync(c => c.IsDeleted == false && c.Id == category.ParentId && c.IsMain))
+                    {
+                        ModelState.AddModelError("ParentId", "Parent mutleq secilmelidir");
+                        return View(category);
+                    }
+
+                    dbCategory.ParentId = category.ParentId;
+                }
+            }
+
+            dbCategory.Name = category.Name.Trim();
+            dbCategory.UpdatedAt = DateTime.UtcNow.AddHours(4);
+            dbCategory.UpdatedBy = "System";
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null) return BadRequest();
+
+            Category category = await _context.Categories
+                .Include(c => c.Children.Where(ca => ca.IsDeleted == false)).ThenInclude(ch => ch.Products.Where(p => p.IsDeleted == false))
+                .Include(c => c.Products.Where(p => p.IsDeleted == false))
+                .FirstOrDefaultAsync(c => c.IsDeleted == false && c.Id == id);
+
+            if (category == null) return NotFound();
+
+            return View(category);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DeleteCategory(int? id)
+        {
+            if (id == null) return BadRequest();
+
+            Category category = await _context.Categories
+                .Include(c => c.Children.Where(ca => ca.IsDeleted == false)).ThenInclude(ch => ch.Products.Where(p => p.IsDeleted == false))
+                .Include(c => c.Products.Where(p => p.IsDeleted == false))
+                .FirstOrDefaultAsync(c => c.IsDeleted == false && c.Id == id);
+
+            if (category == null) return NotFound();
+
+            if(category.Children != null && category.Children.Count() > 0)
+            {
+                foreach (Category child in category.Children)
+                {
+                    child.IsDeleted = true;
+                    child.DeletedBy = "System";
+                    child.DeletedAt = DateTime.UtcNow.AddHours(4);
+
+                    if(child.Products != null && child.Products.Count() > 0)
+                    {
+                        foreach (Product product in child.Products)
+                        {
+                            product.CategoryId = null;
+                        }
+                    }
+                }
+            }
+
+
+            if (category.Products != null && category.Products.Count() > 0)
+            {
+                foreach (Product product in category.Products)
+                {
+                    product.CategoryId = null;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(category.Image))
+            {
+                string fullPath = Path.Combine(_env.WebRootPath, "assets", "images", category.Image);
+
+                if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
+            }
+
+            category.IsDeleted = true;
+            category.DeletedBy = "System";
+            category.DeletedAt = DateTime.UtcNow.AddHours(4);
+
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
