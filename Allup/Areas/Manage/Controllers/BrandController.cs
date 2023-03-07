@@ -1,5 +1,6 @@
 ﻿using Allup.DataAccessLayer;
 using Allup.Models;
+using Allup.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -16,10 +17,13 @@ namespace Allup.Areas.Manage.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageIndex = 1)
         {
-            IEnumerable<Brand> brands = await _context.Brands.Include(b=>b.Products).Where(b=>b.IsDeleted == false).ToListAsync();
-            return View(brands);
+            IQueryable<Brand> query = _context.Brands
+                .Include(b=>b.Products)
+                .Where(b=>b.IsDeleted == false);
+
+            return View(PageNatedList<Brand>.Create(query, pageIndex, 3));
         }
 
         public async Task<IActionResult> Detail(int? id)

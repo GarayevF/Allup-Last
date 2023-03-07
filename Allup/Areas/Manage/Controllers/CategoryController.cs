@@ -1,5 +1,8 @@
 ﻿using Allup.DataAccessLayer;
+using Allup.Extensions;
+using Allup.Helpers;
 using Allup.Models;
+using Allup.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,12 +20,17 @@ namespace Allup.Areas.Manage.Controllers
             _env = env;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int pageIndex = 1)
         {
-            return View(await _context.Categories
+            IQueryable<Category> query = _context.Categories
                 .Include(c => c.Products.Where(p => p.IsDeleted == false))
                 .Where(p => p.IsDeleted == false && p.IsMain)
-                .ToListAsync());
+                .OrderByDescending(c => c.Id);
+
+            //ViewBag.TotalCount = (int)Math.Ceiling((decimal)categories.Count() / 3);
+            //ViewBag.PageIndex = pageIndex;
+
+            return View(PageNatedList<Category>.Create(query, pageIndex, 3);
         }
 
         [HttpGet]
@@ -74,21 +82,8 @@ namespace Allup.Areas.Manage.Controllers
                     ModelState.AddModelError("File", "Size uygun deyil");
                     return View();
                 }
-
-                int lastIndex = category.File.FileName.LastIndexOf(".");
-
-                string name = category.File.FileName.Substring(lastIndex);
-
-                string fileName = $"{DateTime.UtcNow.ToString("yyyMMddHHmmssfff")}_{Guid.NewGuid().ToString()}{name}";
-
-
-                string fullPath = Path.Combine(_env.WebRootPath, "assets", "images", fileName);
-
-                using (FileStream stream = new FileStream(fullPath, FileMode.Create))
-                {
-                    await category.File.CopyToAsync(stream);
-                }
-                category.Image = fileName;
+                
+                category.Image = await category.File.CreateFileAsync(_env, "assets", "images");
                 category.ParentId = null;
             }
             else
@@ -161,37 +156,20 @@ namespace Allup.Areas.Manage.Controllers
 
             if (dbCategory.IsMain && category.File != null)
             {
-                if (category.File?.ContentType != "image/jpeg")
+                if (category.File.CheckFileContenttype("image/jpeg"))
                 {
                     ModelState.AddModelError("File", "Uygun type deyil");
                     return View();
                 }
-                if ((category.File?.Length / 1024) > 300)
+                if (category.File.CheckFileLength(300))
                 {
                     ModelState.AddModelError("File", "Size uygun deyil");
                     return View();
                 }
 
-                int lastIndex = category.File.FileName.LastIndexOf(".");
+                FileHelper.DeleteFile(dbCategory.Image, _env, "assets", "images");
 
-                string name = category.File.FileName.Substring(lastIndex);
-
-                string fileName = $"{DateTime.UtcNow.ToString("yyyMMddHHmmssfff")}_{Guid.NewGuid().ToString()}{name}";
-
-                string fullPath = Path.Combine(_env.WebRootPath, "assets", "images", dbCategory.Image);
-
-                if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
-
-                fullPath = Path.Combine(_env.WebRootPath, "assets", "images", fileName);
-
-                using (FileStream stream = new FileStream(fullPath, FileMode.Create))
-                {
-                    await category.File.CopyToAsync(stream);
-                }
-
-
-
-                dbCategory.Image = fileName;
+                dbCategory.Image = await category.File.CreateFileAsync(_env, "assets", "images"); ;
             }
             else
             {
@@ -278,9 +256,7 @@ namespace Allup.Areas.Manage.Controllers
 
             if (!string.IsNullOrWhiteSpace(category.Image))
             {
-                string fullPath = Path.Combine(_env.WebRootPath, "assets", "images", category.Image);
-
-                if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
+                FileHelper.DeleteFile(category.Image, _env, "assets", "images");
             }
 
             category.IsDeleted = true;
