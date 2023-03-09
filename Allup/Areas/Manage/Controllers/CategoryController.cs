@@ -30,7 +30,7 @@ namespace Allup.Areas.Manage.Controllers
             //ViewBag.TotalCount = (int)Math.Ceiling((decimal)categories.Count() / 3);
             //ViewBag.PageIndex = pageIndex;
 
-            return View(PageNatedList<Category>.Create(query, pageIndex, 3);
+            return View(PageNatedList<Category>.Create(query, pageIndex, 3));
         }
 
         [HttpGet]

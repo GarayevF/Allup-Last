@@ -24,16 +24,21 @@ namespace Allup.Models
         public bool IsBestSeller { get; set; }
         public bool IsFeatured { get; set; }
         [StringLength(255)]
-        [Required]
-        public string MainImage { get; set; }
+        public string? MainImage { get; set; }
         [StringLength(255)]
-        [Required]
-        public string HoverImage { get; set; }
+        public string? HoverImage { get; set; }
 
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
-        public int BrandId { get; set; }
-        public Brand Brand { get; set; }
-        public IEnumerable<ProductImage> ProductImages { get; set; }
+        public int? BrandId { get; set; }
+        public Brand? Brand { get; set; }
+        public IEnumerable<ProductImage>? ProductImages { get; set; }
+        public IEnumerable<ProductTag>? ProductTags { get; set; }
+        [NotMapped]
+        public IFormFile? MainFile { get; set; }
+        [NotMapped]
+        public IFormFile? HoverFile { get; set; }
+        [NotMapped]
+        public IEnumerable<IFormFile>? Files { get; set; }
     }
 }

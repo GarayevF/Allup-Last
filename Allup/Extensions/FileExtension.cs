@@ -2,6 +2,16 @@
 {
     public static class FileExtension
     {
+        public static bool CheckFileContenttype(this IFormFile file, string contentType)
+        {
+            return file.ContentType != contentType;
+        }
+
+        public static bool CheckFileLength(this IFormFile file, int length)
+        {
+            return (file.Length / 1024) > length;
+        }
+
         public static async Task<string> CreateFileAsync(this IFormFile file, IWebHostEnvironment env, params string[] folders)
         {
             int lastIndex = file.FileName.LastIndexOf('.');

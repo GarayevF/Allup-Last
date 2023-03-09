@@ -126,7 +126,7 @@ namespace Allup.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("BrandId")
+                    b.Property<int?>("BrandId")
                         .HasColumnType("int");
 
                     b.Property<int?>("CategoryId")
@@ -164,7 +164,6 @@ namespace Allup.Migrations
                         .HasColumnType("money");
 
                     b.Property<string>("HoverImage")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
@@ -181,7 +180,6 @@ namespace Allup.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("MainImage")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
@@ -447,9 +445,7 @@ namespace Allup.Migrations
                 {
                     b.HasOne("Allup.Models.Brand", "Brand")
                         .WithMany("Products")
-                        .HasForeignKey("BrandId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BrandId");
 
                     b.HasOne("Allup.Models.Category", "Category")
                         .WithMany("Products")
@@ -474,7 +470,7 @@ namespace Allup.Migrations
             modelBuilder.Entity("Allup.Models.ProductTag", b =>
                 {
                     b.HasOne("Allup.Models.Product", "Product")
-                        .WithMany()
+                        .WithMany("ProductTags")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -505,6 +501,8 @@ namespace Allup.Migrations
             modelBuilder.Entity("Allup.Models.Product", b =>
                 {
                     b.Navigation("ProductImages");
+
+                    b.Navigation("ProductTags");
                 });
 #pragma warning restore 612, 618
         }
