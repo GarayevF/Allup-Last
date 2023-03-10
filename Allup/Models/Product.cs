@@ -16,10 +16,10 @@ namespace Allup.Models
         public double ExTax { get; set; }
         public int Count { get; set; }
         [StringLength(1000)]
-        public string Description { get; set; }
-        [StringLength(4, MinimumLength = 4)]
-        public string Seria { get; set; }
-        public int Code { get; set; }
+        public string? Description { get; set; }
+        [StringLength(4)]
+        public string? Seria { get; set; }
+        public int? Code { get; set; }
         public bool IsNewArrival { get; set; }
         public bool IsBestSeller { get; set; }
         public bool IsFeatured { get; set; }
@@ -32,13 +32,15 @@ namespace Allup.Models
         public Category? Category { get; set; }
         public int? BrandId { get; set; }
         public Brand? Brand { get; set; }
-        public IEnumerable<ProductImage>? ProductImages { get; set; }
-        public IEnumerable<ProductTag>? ProductTags { get; set; }
+        public List<ProductImage>? ProductImages { get; set; }
+        public List<ProductTag>? ProductTags { get; set; }
         [NotMapped]
         public IFormFile? MainFile { get; set; }
         [NotMapped]
         public IFormFile? HoverFile { get; set; }
         [NotMapped]
         public IEnumerable<IFormFile>? Files { get; set; }
+        [NotMapped]
+        public IEnumerable<int>? TagIds { get; set; }
     }
 }

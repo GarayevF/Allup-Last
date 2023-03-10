@@ -132,7 +132,7 @@ namespace Allup.Migrations
                     b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Code")
+                    b.Property<int?>("Code")
                         .HasColumnType("int");
 
                     b.Property<int>("Count")
@@ -153,7 +153,6 @@ namespace Allup.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)");
 
@@ -187,7 +186,6 @@ namespace Allup.Migrations
                         .HasColumnType("money");
 
                     b.Property<string>("Seria")
-                        .IsRequired()
                         .HasMaxLength(4)
                         .HasColumnType("nvarchar(4)");
 

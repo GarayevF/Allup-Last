@@ -1,6 +1,18 @@
 ﻿$(document).ready(function () {
 
-    let isMainVal = $('#IsMain').val();
+    $(document).on('click', '.deleteImage', function (e) {
+        e.preventDefault();
+
+        let url = $(this).attr('href');
+
+        fetch(url)
+            .then(res => res.text())
+            .then(data => {
+                $('.imageContainer').html(data)
+            })
+    })
+
+    
 
     let path = window.location.pathname.split('/');
     let action = path[3];
