@@ -7,23 +7,31 @@
             PageIndex = pageIndex;
             TotalCount = totalCount;
 
-            int start = PageIndex - 4;
-            int end = PageIndex + 5;
-
-            if(start <= 0)
+            if(totalCount < query.Count())
             {
-                end = end - (start - 1);
-                start = 1;
-            }
+                int start = PageIndex - 4;
+                int end = PageIndex + 5;
 
-            if (end > TotalCount)
-            { 
-                end = TotalCount;
-                start = totalCount - 9;
-            }
+                if (start <= 0)
+                {
+                    end = end - (start - 1);
+                    start = 1;
+                }
 
-            StartPage = start;
-            EndPage = end;
+                if (end > TotalCount)
+                {
+                    end = TotalCount;
+                    start = totalCount - 9;
+                }
+
+                StartPage = start;
+                EndPage = end;
+            }
+            else
+            {
+                StartPage = 1;
+                EndPage = totalCount;
+            }
 
             this.AddRange(query);
         }

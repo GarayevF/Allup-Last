@@ -16,6 +16,7 @@
             <div class="form-group">
                 <label asp-for="Name">Name</label>
                 <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text text-danger"></span>
             </div>
         </form>
         <button type="button" class="btn btn-primary">Submit</button>

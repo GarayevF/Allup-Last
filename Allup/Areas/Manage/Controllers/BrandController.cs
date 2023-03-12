@@ -1,6 +1,7 @@
 ﻿using Allup.DataAccessLayer;
 using Allup.Models;
 using Allup.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 namespace Allup.Areas.Manage.Controllers
 {
     [Area("manage")]
+    
     public class BrandController : Controller
     {
         private readonly AppDbContext _context;
@@ -17,6 +19,7 @@ namespace Allup.Areas.Manage.Controllers
             _context = context;
         }
 
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public async Task<IActionResult> Index(int pageIndex = 1)
         {
             IQueryable<Brand> query = _context.Brands
@@ -26,6 +29,7 @@ namespace Allup.Areas.Manage.Controllers
             return View(PageNatedList<Brand>.Create(query, pageIndex, 3));
         }
 
+        [Authorize(Roles = "SuperAdmin, Admin")]
         public async Task<IActionResult> Detail(int? id)
         {
             if(id == null) return BadRequest();
@@ -39,12 +43,14 @@ namespace Allup.Areas.Manage.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "SuperAdmin")]
         public IActionResult Create() 
         { 
             return View(); 
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> Create(Brand brand)
         {
             if(!ModelState.IsValid)
@@ -68,6 +74,7 @@ namespace Allup.Areas.Manage.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> Update(int? id)
         {
             if (id == null) return BadRequest();
@@ -81,6 +88,7 @@ namespace Allup.Areas.Manage.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> Update(Brand brand)
         {
             if (!ModelState.IsValid)
@@ -103,7 +111,8 @@ namespace Allup.Areas.Manage.Controllers
 
 
 
-        [HttpPost]
+        [HttpGet]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if(id == null) return BadRequest();

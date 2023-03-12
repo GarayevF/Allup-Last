@@ -54,10 +54,12 @@
     <div class="col-lg-12">
         <nav aria-label="Page navigation example">
             <ul class="pagination">
-                @if(Model.HasPrev)
+                @if (Model.HasPrev)
                 {
-                    <li class="page-item"><a class="page-link" asp-area="manage" asp-controller="category" asp-action="index"
-                        asp-route-pageIndex="@(Model.PageIndex - 1)">Previous</a></li>
+                    <li class="page-item">
+                        <a class="page-link" asp-area="manage" asp-controller="category" asp-action="index"
+                       asp-route-pageIndex="@(Model.PageIndex - 1)">Previous</a>
+                    </li>
                 }
                 @for (int i = Model.StartPage; i <= Model.EndPage; i++)
                 {
@@ -65,8 +67,10 @@
                 }
                 @if (Model.HasNext)
                 {
-                    <li class="page-item"><a class="page-link" asp-area="manage" asp-controller="category" asp-action="index"
-                        asp-route-pageIndex="@(Model.PageIndex + 1)">Next</a></li>
+                    <li class="page-item">
+                        <a class="page-link" asp-area="manage" asp-controller="category" asp-action="index"
+                       asp-route-pageIndex="@(Model.PageIndex + 1)">Next</a>
+                    </li>
                 }
             </ul>
         </nav>

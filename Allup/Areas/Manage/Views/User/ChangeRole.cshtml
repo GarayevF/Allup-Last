@@ -1,0 +1,29 @@
+﻿@model ChangeRoleVM
+@{
+    ViewData["Title"] = "ChangeRole";
+    IEnumerable<RoleVM> roleVMs = ViewBag.Roles;
+
+    SelectList selectList = new SelectList(roleVMs, nameof(RoleVM.Id), nameof(RoleVM.Name));
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="row justify-content-lg-between">
+            <div class="col-lg-12">
+                <h1 class="h3 mb-4 text-gray-800">Category Create Page</h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <form method="post" enctype="multipart/form-data">
+            <div class="form-group parentInput">
+                <label asp-for="RoleId"></label>
+                <select asp-for="RoleId" class="form-control" asp-items="@selectList">
+
+                </select>
+                <span asp-validation-for="RoleId" class="text text-danger"></span>
+            </div>
+        </form>
+        <button type="button" class="btn btn-primary">Submit</button>
+    </div>
+</div>

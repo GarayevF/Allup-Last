@@ -269,3 +269,8 @@ C:\Users\Farid\Desktop\Allup\Allup\obj\Debug\net6.0\refint\Allup.dll
 C:\Users\Farid\Desktop\Allup\Allup\obj\Debug\net6.0\Allup.pdb
 C:\Users\Farid\Desktop\Allup\Allup\obj\Debug\net6.0\Allup.genruntimeconfig.cache
 C:\Users\Farid\Desktop\Allup\Allup\obj\Debug\net6.0\ref\Allup.dll
+C:\Users\Farid\Desktop\Allup\Allup\bin\Debug\net6.0\Microsoft.AspNetCore.Cryptography.Internal.dll
+C:\Users\Farid\Desktop\Allup\Allup\bin\Debug\net6.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+C:\Users\Farid\Desktop\Allup\Allup\bin\Debug\net6.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\Farid\Desktop\Allup\Allup\bin\Debug\net6.0\Microsoft.Extensions.Identity.Core.dll
+C:\Users\Farid\Desktop\Allup\Allup\bin\Debug\net6.0\Microsoft.Extensions.Identity.Stores.dll
