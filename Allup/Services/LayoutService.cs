@@ -2,6 +2,7 @@
 using Allup.Interfaces;
 using Allup.Models;
 using Allup.ViewModels.BasketViewModels;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
@@ -11,30 +12,70 @@ namespace Allup.Services
     {
         private readonly AppDbContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly UserManager<AppUser> _userManager;
 
-        public LayoutService(AppDbContext context, IHttpContextAccessor httpContextAccessor)
+        public LayoutService(AppDbContext context, IHttpContextAccessor httpContextAccessor, UserManager<AppUser> userManager)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
+            _userManager = userManager;
         }
 
         public async Task<List<BasketVM>> GetBaskets()
         {
-            string cookies = _httpContextAccessor.HttpContext.Request.Cookies["basket"];
-
-            if (!string.IsNullOrWhiteSpace(cookies))
+            AppUser appUser = null;
+            List<Basket> baskets = null;
+            if(_httpContextAccessor.HttpContext.User.Identity.IsAuthenticated &&
+                _httpContextAccessor.HttpContext.User.IsInRole("Member"))
             {
-                List<BasketVM> basketVMs = JsonConvert.DeserializeObject<List<BasketVM>>(cookies);
-                foreach (BasketVM basketVM in basketVMs)
-                {
-                    Product product = await _context.Products.FirstOrDefaultAsync(p => p.IsDeleted == false && p.Id == basketVM.Id);
+                appUser = await _userManager.Users
+                    .Include(u => u.Baskets.Where(b => b.IsDeleted == false)).ThenInclude(b => b.Product)
+                    .FirstOrDefaultAsync(u => u.UserName == _httpContextAccessor.HttpContext.User.Identity.Name);
 
-                    if (product != null)
+                baskets = appUser.Baskets;
+            }
+
+            string cookie = _httpContextAccessor.HttpContext.Request.Cookies["basket"];
+
+            if (!string.IsNullOrWhiteSpace(cookie))
+            {
+                List<BasketVM> basketVMs = null;
+                if (baskets != null && baskets.Count > 0)
+                {
+                    basketVMs = new List<BasketVM>();
+                    foreach (Basket basket in baskets)
                     {
-                        basketVM.Title = product.Title;
-                        basketVM.Price = product.DiscountedPrice > 0 ? product.DiscountedPrice : product.Price;
-                        basketVM.Image = product.MainImage;
-                        basketVM.ExTax = product.ExTax;
+                        Product product = basket.Product;
+
+                        if (product != null)
+                        {
+                            BasketVM basketVM = new BasketVM();
+
+                            basketVM.Id = product.Id;
+                            basketVM.Count = product.Count;
+                            basketVM.Title = product.Title;
+                            basketVM.Price = product.DiscountedPrice > 0 ? product.DiscountedPrice : product.Price;
+                            basketVM.Image = product.MainImage;
+                            basketVM.ExTax = product.ExTax;
+
+                            basketVMs.Add(basketVM);
+                        }
+                    }
+                }
+                else
+                {
+                    basketVMs = JsonConvert.DeserializeObject<List<BasketVM>>(cookie);
+                    foreach (BasketVM basketVM1 in basketVMs)
+                    {
+                        Product product = await _context.Products.FirstOrDefaultAsync(p => p.Id == basketVM1.Id);
+
+                        if (product != null)
+                        {
+                            basketVM1.Title = product.Title;
+                            basketVM1.Price = product.DiscountedPrice > 0 ? product.DiscountedPrice : product.Price;
+                            basketVM1.Image = product.MainImage;
+                            basketVM1.ExTax = product.ExTax;
+                        }
                     }
                 }
 

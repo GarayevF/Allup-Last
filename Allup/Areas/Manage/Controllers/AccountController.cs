@@ -107,7 +107,7 @@ namespace Allup.Areas.Manage.Controllers
             Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager
                 .PasswordSignInAsync(appUser, loginVM.Password, loginVM.RememberMe, true);
 
-            if (signInResult.IsLockedOut)
+            if (appUser.LockoutEnd > DateTime.UtcNow)
             {
                 ModelState.AddModelError("", "Hesabiniz bloklanib");
                 return View(loginVM);

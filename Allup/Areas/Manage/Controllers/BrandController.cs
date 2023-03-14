@@ -26,7 +26,7 @@ namespace Allup.Areas.Manage.Controllers
                 .Include(b=>b.Products)
                 .Where(b=>b.IsDeleted == false);
 
-            return View(PageNatedList<Brand>.Create(query, pageIndex, 3));
+            return View(PageNatedList<Brand>.Create(query, pageIndex, 3, 3));
         }
 
         [Authorize(Roles = "SuperAdmin, Admin")]

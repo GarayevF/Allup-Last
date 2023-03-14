@@ -2,15 +2,15 @@
 {
     public class PageNatedList<T> : List<T>
     {
-        public PageNatedList(IQueryable<T> query, int pageIndex, int totalCount)
+        public PageNatedList(IQueryable<T> query, int pageIndex, int totalCount, int pageItemCount)
         {
             PageIndex = pageIndex;
             TotalCount = totalCount;
 
-            if(totalCount < query.Count())
+            if(totalCount >= pageItemCount)
             {
-                int start = PageIndex - 4;
-                int end = PageIndex + 5;
+                int start = PageIndex - (int)Math.Floor((decimal)(pageItemCount - 1) / 2);
+                int end = PageIndex + (int)Math.Ceiling((decimal)(pageItemCount - 1) / 2);
 
                 if (start <= 0)
                 {
@@ -21,7 +21,7 @@
                 if (end > TotalCount)
                 {
                     end = TotalCount;
-                    start = totalCount - 9;
+                    start = TotalCount - (pageItemCount - 1);
                 }
 
                 StartPage = start;
@@ -43,12 +43,12 @@
         public bool HasPrev => PageIndex > 1;
         public int StartPage { get; }
         public int EndPage { get; }
-        public static PageNatedList<T> Create(IQueryable<T> query, int pageIndex, int itemCount)
+        public static PageNatedList<T> Create(IQueryable<T> query, int pageIndex, int itemCount, int pageItemCount)
         {
             int totalCount = (int)Math.Ceiling((decimal)query.Count() / itemCount);
             query = query.Skip((pageIndex - 1) * itemCount).Take(itemCount);
 
-            return new PageNatedList<T>(query, pageIndex, totalCount);
+            return new PageNatedList<T>(query, pageIndex, totalCount, pageItemCount);
         }
     }
 }

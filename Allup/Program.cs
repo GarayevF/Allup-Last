@@ -5,6 +5,7 @@ using Allup.Services;
 using Allup.Interfaces;
 using Allup.Models;
 using Microsoft.AspNetCore.Identity;
+using Allup.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews()
@@ -33,7 +34,8 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
     options.Lockout.AllowedForNewUsers = true;
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
     options.Lockout.MaxFailedAccessAttempts = 3;
-}).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+}).AddEntityFrameworkStores<AppDbContext>()
+.AddDefaultTokenProviders().AddErrorDescriber<IdentityErrorDescriberAZ>();
 
 builder.Services.AddHttpContextAccessor();
 

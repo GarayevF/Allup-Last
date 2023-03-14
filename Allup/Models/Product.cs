@@ -34,6 +34,7 @@ namespace Allup.Models
         public Brand? Brand { get; set; }
         public List<ProductImage>? ProductImages { get; set; }
         public List<ProductTag>? ProductTags { get; set; }
+        public IEnumerable<Basket>? Baskets { get; set; }
         [NotMapped]
         public IFormFile? MainFile { get; set; }
         [NotMapped]

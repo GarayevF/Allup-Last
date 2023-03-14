@@ -1,5 +1,6 @@
 ﻿using Allup.DataAccessLayer;
 using Allup.Models;
+using Allup.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,9 +15,11 @@ namespace Allup.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int pageIndex = 1)
         {
-            return View();
+            IQueryable<Product> products = _context.Products.Where(p => p.IsDeleted == false);
+
+            return View(PageNatedList<Product>.Create(products, pageIndex, 12, 7));
         }
 
         public async Task<IActionResult> Modal(int? id)

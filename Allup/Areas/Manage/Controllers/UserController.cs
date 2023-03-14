@@ -39,11 +39,12 @@ namespace Allup.Areas.Manage.Controllers
                     Id = appUser.Id,
                     Name = appUser.Name,
                     SurName = appUser.SurName,
-                    Role = (await _userManager.GetRolesAsync(appUser))[0]
+                    Role = (await _userManager.GetRolesAsync(appUser))[0],
+                    IsActive = appUser.IsActive,
                 };
             }
 
-            return View(PageNatedList<UserVM>.Create(userVMs.AsQueryable(), pageIndex, 3));
+            return View(PageNatedList<UserVM>.Create(userVMs.AsQueryable(), pageIndex, 3, 5));
         }
 
         [HttpGet]
@@ -73,7 +74,7 @@ namespace Allup.Areas.Manage.Controllers
 
             ChangeRoleVM changeRoleVM = new ChangeRoleVM
             {
-                UserId = id,
+                Id = id,
                 RoleId = roles.FirstOrDefault(r=>r.Name == roleName).Id,
             };
 
@@ -84,9 +85,55 @@ namespace Allup.Areas.Manage.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangeRole(ChangeRoleVM changeRoleVM)
+        public async Task<IActionResult> ChangeRole(string id, ChangeRoleVM changeRoleVM)
         {
-            return Ok(changeRoleVM);
+            List<RoleVM> roles = await _roleManager.Roles.Where(r => r.Name != "SuperAdmin")
+                .Select(x => new RoleVM
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                })
+                .ToListAsync();
+
+            ViewBag.Roles = roles;
+
+            if (!ModelState.IsValid)
+            {
+                return View(changeRoleVM);
+            }
+
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return BadRequest();
+            }
+
+            if (string.IsNullOrWhiteSpace(changeRoleVM.RoleId))
+            {
+                return BadRequest();
+            }
+
+            if (id != changeRoleVM.Id)
+            {
+                return BadRequest();
+            }
+
+            if(!await _roleManager.Roles.AnyAsync(r=>r.Id == changeRoleVM.RoleId))
+            {
+                return NotFound();
+            }
+
+            AppUser appUser = await _userManager.FindByIdAsync(id);
+
+            string roleName = (await _userManager.GetRolesAsync(appUser))[0];
+
+            if(roles.FirstOrDefault(r => r.Name == roleName).Id != changeRoleVM.RoleId)
+            {
+                await _userManager.RemoveFromRoleAsync(appUser, roleName);
+                await _userManager.AddToRoleAsync(appUser, roles.FirstOrDefault(r => r.Id == changeRoleVM.RoleId).Name);
+            }
+
+            return RedirectToAction(nameof(Index));
+
         }
     }
 }

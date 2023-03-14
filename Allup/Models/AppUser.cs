@@ -10,5 +10,6 @@ namespace Allup.Models
         [StringLength(100)]
         public string? SurName { get; set; }
         public bool IsActive { get; set; }
+        public List<Basket>? Baskets { get; set; }
     }
 }

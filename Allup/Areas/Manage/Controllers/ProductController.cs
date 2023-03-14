@@ -29,7 +29,7 @@ namespace Allup.Areas.Manage.Controllers
                 .ThenInclude(pt=>pt.Tag)
                 .Where(p => p.IsDeleted == false);
 
-            return View(PageNatedList<Product>.Create(queries, pageIndex, 3));
+            return View(PageNatedList<Product>.Create(queries, pageIndex, 3, 5));
         }
 
         [HttpGet]
