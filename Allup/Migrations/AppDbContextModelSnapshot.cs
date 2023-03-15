@@ -444,6 +444,71 @@ namespace Allup.Migrations
                     b.ToTable("ProductTags");
                 });
 
+            modelBuilder.Entity("Allup.Models.Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Start")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Reviews");
+                });
+
             modelBuilder.Entity("Allup.Models.Setting", b =>
                 {
                     b.Property<int>("Id")
@@ -707,11 +772,11 @@ namespace Allup.Migrations
             modelBuilder.Entity("Allup.Models.Basket", b =>
                 {
                     b.HasOne("Allup.Models.AppUser", "AppUser")
-                        .WithMany()
+                        .WithMany("Baskets")
                         .HasForeignKey("AppUserId");
 
                     b.HasOne("Allup.Models.Product", "Product")
-                        .WithMany()
+                        .WithMany("Baskets")
                         .HasForeignKey("ProductId");
 
                     b.Navigation("AppUser");
@@ -773,6 +838,21 @@ namespace Allup.Migrations
                     b.Navigation("Tag");
                 });
 
+            modelBuilder.Entity("Allup.Models.Review", b =>
+                {
+                    b.HasOne("Allup.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.HasOne("Allup.Models.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -824,6 +904,11 @@ namespace Allup.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Allup.Models.AppUser", b =>
+                {
+                    b.Navigation("Baskets");
+                });
+
             modelBuilder.Entity("Allup.Models.Brand", b =>
                 {
                     b.Navigation("Products");
@@ -838,6 +923,8 @@ namespace Allup.Migrations
 
             modelBuilder.Entity("Allup.Models.Product", b =>
                 {
+                    b.Navigation("Baskets");
+
                     b.Navigation("ProductImages");
 
                     b.Navigation("ProductTags");

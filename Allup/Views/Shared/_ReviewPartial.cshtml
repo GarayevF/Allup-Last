@@ -1,0 +1,51 @@
+﻿@model Review
+
+<div class="rating-form">
+    <h4 class="form-title">Add your Comments</h4>
+
+    <form method="post" asp-controller="product" asp-action="addreview" asp-route-productId="@Model.Product.Id">
+        <div class="rating-star d-flex">
+            <span class="title">Rating:</span>
+            <div class="rate-area">
+                <input type="radio" id="5-star" asp-for="Start" value="5" />
+                <label for="5-star" title="Amazing">5 stars</label>
+                <input type="radio" id="4-star" asp-for="Start" value="4" />
+                <label for="4-star" title="Good">4 stars</label>
+                <input type="radio" id="3-star" asp-for="Start" value="3" />
+                <label for="3-star" title="Average">3 stars</label>
+                <input type="radio" id="2-star" asp-for="Start" value="2" />
+                <label for="2-star" title="Not Good">2 stars</label>
+                <input type="radio" id="1-star" asp-for="Start" value="1" />
+                <label for="1-star" title="Bad">1 star</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="single-form">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" placeholder="Name">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="single-form">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" placeholder="Email">
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="single-form">
+                    <label asp-for="Comment"></label>
+                    <textarea asp-for="Comment" placeholder="Write a review"></textarea>
+                    <span asp-validation-for="Comment" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="single-form">
+                    <button class="main-btn">Add Review</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

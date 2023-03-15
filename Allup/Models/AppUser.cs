@@ -11,5 +11,6 @@ namespace Allup.Models
         public string? SurName { get; set; }
         public bool IsActive { get; set; }
         public List<Basket>? Baskets { get; set; }
+        public IEnumerable<Review>? Reviews { get; set; }
     }
 }
