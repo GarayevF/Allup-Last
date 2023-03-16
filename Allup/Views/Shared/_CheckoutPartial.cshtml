@@ -1,0 +1,51 @@
+﻿@model Order
+
+<form id="checkoutform" method="post" asp-controller="Order">
+    <div class="billing-address mt-30">
+        <h4 class="allup-title">Billing Address</h4>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="single-form">
+                    <label asp-for="Name"></label>
+                    <input asp-for="Name" placeholder="First Name">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="single-form">
+                    <label asp-for="SurName"></label>
+                    <input asp-for="SurName" placeholder="Last Name">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="single-form">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" placeholder="Email Address">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="single-form">
+                    <label asp-for="Country"></label>
+                    <input asp-for="Country" placeholder="Email Address">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="single-form">
+                    <label asp-for="City"></label>
+                    <input asp-for="City" placeholder="Town/City">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="single-form">
+                    <label asp-for="State"></label>
+                    <input asp-for="State" placeholder="State">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="single-form">
+                    <label asp-for="PostalCode"></label>
+                    <input asp-for="PostalCode" placeholder="Zip Code">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

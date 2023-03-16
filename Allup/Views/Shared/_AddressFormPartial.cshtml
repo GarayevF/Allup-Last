@@ -1,0 +1,45 @@
+﻿@model Address
+
+<form method="post" asp-controller="account" asp-action="AddAddress">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="custom-checkbox">
+                <input asp-for="IsMain" id="account">
+                <label for="account"></label>
+                <p>IsMain? </p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="single-form">
+                <label asp-for="Country"></label>
+                <input asp-for="Country" placeholder="Country">
+                <span asp-validation-for="Country" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="single-form">
+                <label asp-for="City"></label>
+                <input asp-for="City" placeholder="Town/City">
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="single-form">
+                <label asp-for="State"></label>
+                <input asp-for="State" placeholder="State">
+                <span asp-validation-for="State" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="single-form">
+                <label asp-for="PostalCode"></label>
+                <input asp-for="PostalCode" placeholder="Zip Code">
+                <span asp-validation-for="PostalCode" class="text-danger"></span>
+            </div>
+        </div> <div class="col-md-6">
+            <button class="main-btn main-btn-2" type="submit">Add Address</button>
+        </div>
+        
+    </div>
+    
+</form>

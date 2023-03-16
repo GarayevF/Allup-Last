@@ -36,6 +36,7 @@ namespace Allup.Models
         public List<ProductTag>? ProductTags { get; set; }
         public IEnumerable<Basket>? Baskets { get; set; }
         public List<Review>? Reviews { get; set; }
+        public IEnumerable<OrderItem>? OrderItems { get; set; }
         [NotMapped]
         public IFormFile? MainFile { get; set; }
         [NotMapped]

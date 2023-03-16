@@ -1,8 +1,16 @@
 ﻿$(document).ready(function () {
 
-    $(document).on('click', '.product-close', '.basketdelete', '.sub', function (e)
+    $(document).on('click', '.addAddresses', function () {
+        e.preventDefault();
+
+        $('.addressForm').removeClass('d-none');
+        $('.addressesContainer').addClass('d-none');
+    })
+
+    $(document).on('click', '.product-close, .basketdelete, .sub', function (e)
     {
         e.preventDefault();
+
 
         let url = $(this).attr('href');
         console.log(url)
