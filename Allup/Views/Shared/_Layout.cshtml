@@ -29,6 +29,7 @@
     <!--===== Vendor CSS (Bootstrap & Icon Font) =====-->
 
     <link rel="stylesheet" href="~/assets/css/plugins/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <link rel="stylesheet" href="~/assets/css/plugins/ionicons.min.css">
     <link rel="stylesheet" href="~/assets/css/plugins/fontawesome.min.css">
 
@@ -50,6 +51,16 @@
 </head>
 
 <body>
+
+    @if(TempData["Success"] != null)
+    {
+        <input type="hidden" name="success" value="@TempData["Success"]" />
+    }
+
+    @if(TempData["Error"] != null)
+    {
+        <input type="hidden" name="error" value="@TempData["Error"]" />
+    }
 
     <!--====== PRELOADER PART START ======-->
 
@@ -991,6 +1002,7 @@
     <!--====== BACK TOP TOP PART ENDS ======-->
     <!--====== Vendors js ======-->
     <script src="~/assets/js/vendor/jquery-1.12.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="~/assets/js/vendor/modernizr-3.7.1.min.js"></script>
     @RenderSection("Scripts", false)
     <!--====== Plugins js ======-->

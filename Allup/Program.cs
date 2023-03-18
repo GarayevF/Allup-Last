@@ -6,6 +6,8 @@ using Allup.Interfaces;
 using Allup.Models;
 using Microsoft.AspNetCore.Identity;
 using Allup.Extensions;
+using Allup.ViewModels;
+using System.Drawing;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews()
@@ -38,6 +40,8 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 .AddDefaultTokenProviders().AddErrorDescriber<IdentityErrorDescriberAZ>();
 
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.Configure<SmtpSetting>(builder.Configuration.GetSection("SmtpSetting"));
 
 builder.Services.AddScoped<ILayoutService, LayoutService>();
 

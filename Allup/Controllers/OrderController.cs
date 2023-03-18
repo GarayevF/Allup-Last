@@ -62,7 +62,52 @@ namespace Allup.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checkout(Order order)
         {
-            return Ok(order);
+            AppUser appUser = await _userManager.Users
+                .Include(u => u.Baskets.Where(b => b.IsDeleted == false)).ThenInclude(b => b.Product)
+                .Include(u => u.Addresses.Where(a => a.IsMain && a.IsDeleted == false))
+                .Include(u => u.Orders)
+                .FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+
+            OrderVM orderVM = new OrderVM
+            {
+                Order = order,
+                Baskets = appUser.Baskets
+            };
+
+            if (!ModelState.IsValid)
+            {
+                return View(orderVM);
+            }
+
+            order.CreatedAt = DateTime.UtcNow.AddHours(4);
+            order.CreatedBy = $"{appUser.Name} {appUser.SurName}";
+            order.No = appUser.Orders != null && appUser.Orders.Count > 0 ? appUser.Orders.Last().No + 1 : 1;
+
+            appUser.Orders.Add(order);
+            order.OrderItems = new List<OrderItem>();
+            foreach (Basket basket in appUser.Baskets)
+            {
+                basket.IsDeleted = true;
+
+                OrderItem orderItem = new OrderItem
+                {
+                    CreatedAt = DateTime.UtcNow.AddHours(4),
+                    CreatedBy = $"{appUser.Name} {appUser.SurName}",
+                    Count = basket.Count,
+                    ProductId = basket.ProductId,
+                    Price = basket.Product.DiscountedPrice > 0 ? basket.Product.DiscountedPrice : basket.Product.Price,
+                };
+
+                order.OrderItems.Add(orderItem);
+            }
+
+            HttpContext.Response.Cookies.Append("basket", "");
+
+            await _context.SaveChangesAsync();
+
+            TempData["Error"] = $"{order.No} Sifarisiniz ugurla gonderildi";
+
+            return RedirectToAction("index", "home");
         }
     }
 }

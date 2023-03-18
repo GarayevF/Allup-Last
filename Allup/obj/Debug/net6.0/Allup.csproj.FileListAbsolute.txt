@@ -274,3 +274,6 @@ C:\Users\Farid\Desktop\Allup\Allup\bin\Debug\net6.0\Microsoft.AspNetCore.Cryptog
 C:\Users\Farid\Desktop\Allup\Allup\bin\Debug\net6.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Users\Farid\Desktop\Allup\Allup\bin\Debug\net6.0\Microsoft.Extensions.Identity.Core.dll
 C:\Users\Farid\Desktop\Allup\Allup\bin\Debug\net6.0\Microsoft.Extensions.Identity.Stores.dll
+C:\Users\Farid\Desktop\Allup\Allup\bin\Debug\net6.0\MailKit.dll
+C:\Users\Farid\Desktop\Allup\Allup\bin\Debug\net6.0\MimeKit.dll
+C:\Users\Farid\Desktop\Allup\Allup\bin\Debug\net6.0\BouncyCastle.Crypto.dll

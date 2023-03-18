@@ -1,0 +1,41 @@
+﻿@model Blog
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="row justify-content-lg-between">
+            <div class="col-lg-12">
+                <h1 class="h3 mb-4 text-gray-800">Brand Create Page</h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <form>
+            <div class="form-group">
+                <label asp-for="Title">Name</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text text-danger"></span>
+            </div>
+            <form>
+                <div class="form-group">
+                    <label asp-for="Desc">Example textarea</label>
+                    <textarea asp-for="Desc" class="form-control" rows="3"></textarea>
+                </div>
+            </form>
+        </form>
+        <button type="button" class="btn btn-primary">Submit</button>
+    </div>
+</div>
+
+@section Scripts{
+    <script src="https://cdn.ckeditor.com/ckeditor5/36.0.1/classic/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#Desc'))
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+}

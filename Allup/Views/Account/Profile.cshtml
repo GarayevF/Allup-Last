@@ -46,42 +46,58 @@
                         <div class="my-account-order account-wrapper">
                             <h4 class="account-title">Orders</h4>
                             <div class="account-table text-center mt-30 table-responsive">
-                                <table class="table">
+                                <table class="table table-condensed" style="border-collapse:collapse;">
                                     <thead>
                                         <tr>
-                                            <th class="no">No</th>
-                                            <th class="name">Name</th>
-                                            <th class="date">Date</th>
-                                            <th class="status">Status</th>
-                                            <th class="total">Total</th>
-                                            <th class="action">Action</th>
+                                            <th>No</th>
+                                            <th>Full Name</th>
+                                            <th>Created At</th>
+                                            <th>Total Price</th>
+                                            <th>Status</th>
+                                            <th>Comment</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Mostarizing Oil</td>
-                                            <td>Aug 22, 2020</td>
-                                            <td>Pending</td>
-                                            <td>$100</td>
-                                            <td><a href="#">View</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Katopeno Altuni</td>
-                                            <td>July 22, 2020</td>
-                                            <td>Approved</td>
-                                            <td>$45</td>
-                                            <td><a href="#">View</a></td>
-                                        </tr>
-                                        <tr>
-                                            <td>3</td>
-                                            <td>Murikhete Paris</td>
-                                            <td>June 22, 2020</td>
-                                            <td>On Hold</td>
-                                            <td>$99</td>
-                                            <td><a href="#">View</a></td>
-                                        </tr>
+                                        @if(Model.Orders != null && Model.Orders.Count() > 0)
+                                        {
+                                            foreach (Order order in Model.Orders)
+                                            {
+                                                <tr data-toggle="collapse" data-target="#demo@(order.Id)" class="accordion-toggle">
+                                                    <td>@order.No</td>
+                                                    <td>@order.CreatedAt?.ToString("dd MMM yyyy")</td>
+                                                    <td>@($"{order.Name} {order.SurName}")</td>
+                                                    <td>$@order.OrderItems.Sum(oi => oi.Price * oi.Count)</td>
+                                                    <td>@order.Status</td>
+                                                    <td>@order.Comment</td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="6" class="hiddenRow">
+                                                        <div class="accordian-body collapse" id="demo@(order.Id)">
+                                                            <table class="table table-bor">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th class="name">Name</th>
+                                                                        <th class="status">Price</th>
+                                                                        <th class="total">Count</th>
+                                                                        <th class="action">Total</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @foreach (OrderItem orderItem in order.OrderItems)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>@orderItem.Product.Title</td>
+                                                                            <td>@orderItem.Price</td>
+                                                                            <td>@orderItem.Count</td>
+                                                                            <td>@(orderItem.Count * orderItem.Price)</td>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                    </div> </td>
+                                                </tr>
+                                            }
+                                        }
                                     </tbody>
                                 </table>
                             </div>
@@ -116,59 +132,7 @@
                         </div>
                     </div>
                     <div class="tab-pane fade @(TempData["Tab"]?.ToString() == "Account" ? "show active" : "")" id="pills-account" role="tabpanel" aria-labelledby="pills-account-tab">
-                        <div class="my-account-details account-wrapper">
-                            <h4 class="account-title">Account Details</h4>
-
-                            <div class="account-details">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="single-form">
-                                            <input type="text" placeholder="First Name">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="single-form">
-                                            <input type="text" placeholder="Last Name">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="single-form">
-                                            <input type="text" placeholder="Display Name">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="single-form">
-                                            <input type="text" placeholder="Email address">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="single-form">
-                                            <h5 class="title">Password change</h5>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="single-form">
-                                            <input type="password" placeholder="Current Password">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="single-form">
-                                            <input type="password" placeholder="New Password">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="single-form">
-                                            <input type="password" placeholder="Confirm Password">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="single-form">
-                                            <button class="main-btn main-btn-2">Save Change</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @await Html.PartialAsync("_AccountFormPartial", Model.AccountVM);
                     </div>
                 </div>
             </div>
@@ -177,4 +141,8 @@
 </section>
 
 <!--====== My Account Part Ends ======-->
+
+@section Scripts{
+    @await Html.PartialAsync("_ValidationPartial")
+}
 

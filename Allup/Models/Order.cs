@@ -26,6 +26,6 @@ namespace Allup.Models
         public string? State { get; set; }
         [StringLength(100)]
         public string? PostalCode { get; set; }
-        public IEnumerable<OrderItem>? OrderItems { get; set; }
+        public List<OrderItem>? OrderItems { get; set; }
     }
 }

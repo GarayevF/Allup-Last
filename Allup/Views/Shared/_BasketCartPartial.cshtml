@@ -46,7 +46,7 @@
             <span class="value">€@(Model.Sum(b => b.Price * b.Count) + Model.Sum(b => b.ExTax * b.Count))</span>
         </div>
     </div> <!-- price content -->
-    @if (User.Identity.IsAuthenticated)
+    @if (User.Identity.IsAuthenticated && User.IsInRole("Member") && Model != null && Model.Count > 0)
     {
         <div class="checkout text-center">
             <a asp-controller="Order" asp-action="checkout" class="main-btn">Checkout</a>
